@@ -5,15 +5,13 @@
 package bip44
 
 import (
-	"github.com/FactomProject/go-bip32"
-	"github.com/FactomProject/go-bip39"
+	"github.com/Moonlight-io/go-bip32"
+	"github.com/Moonlight-io/go-bip39"
+	"github.com/Moonlight-io/asteroid-core/models/primatives"
 )
 
 const Purpose uint32 = 0x8000002C
 
-//https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
-//https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-//https://github.com/FactomProject/FactomDocs/blob/master/wallet_info/wallet_test_vectors.md
 
 const (
 	TypeBitcoin               uint32 = 0x80000000
@@ -112,42 +110,42 @@ const (
 	TypeFactomIdentity        uint32 = 0x80000119
 )
 
-func NewKeyFromMnemonic(mnemonic string, coin, account, chain, address uint32) (*bip32.Key, error) {
+func NewKeyFromMnemoniccurve(curve primatives.EllipticCurve, mnemonic string, masterSeed []byte, coin, account, chain, address uint32) (*bip32.Key, error) {
 	seed, err := bip39.NewSeedWithErrorChecking(mnemonic, "")
 	if err != nil {
 		return nil, err
 	}
 
-	masterKey, err := bip32.NewMasterKey(seed)
+	masterKey, err := bip32.NewMasterKey(curve, masterSeed, seed)
 	if err != nil {
 		return nil, err
 	}
 
-	return NewKeyFromMasterKey(masterKey, coin, account, chain, address)
+	return NewKeyFromMasterKey(curve, masterKey, coin, account, chain, address)
 }
 
-func NewKeyFromMasterKey(masterKey *bip32.Key, coin, account, chain, address uint32) (*bip32.Key, error) {
-	child, err := masterKey.NewChildKey(Purpose)
+func NewKeyFromMasterKey(curve primatives.EllipticCurve, masterKey *bip32.Key, coin, account, chain, address uint32) (*bip32.Key, error) {
+	child, err := masterKey.NewChildKey(curve, Purpose)
 	if err != nil {
 		return nil, err
 	}
 
-	child, err = child.NewChildKey(coin)
+	child, err = child.NewChildKey(curve, coin)
 	if err != nil {
 		return nil, err
 	}
 
-	child, err = child.NewChildKey(account)
+	child, err = child.NewChildKey(curve, account)
 	if err != nil {
 		return nil, err
 	}
 
-	child, err = child.NewChildKey(chain)
+	child, err = child.NewChildKey(curve, chain)
 	if err != nil {
 		return nil, err
 	}
 
-	child, err = child.NewChildKey(address)
+	child, err = child.NewChildKey(curve, address)
 	if err != nil {
 		return nil, err
 	}
