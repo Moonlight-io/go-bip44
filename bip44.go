@@ -6,7 +6,7 @@ package bip44
 
 import (
 	"github.com/Moonlight-io/go-bip32"
-	"github.com/Moonlight-io/go-bip39"
+	"github.com/FactomProject/go-bip39"
 	"github.com/Moonlight-io/asteroid-core/models/primatives"
 )
 
@@ -108,6 +108,7 @@ const (
 	TypeZcash                 uint32 = 0x80000085
 	TypeLisk                  uint32 = 0x80000086
 	TypeFactomIdentity        uint32 = 0x80000119
+	TypeNeo                   uint32 = 0x80000378
 )
 
 func NewKeyFromMnemoniccurve(curve primatives.EllipticCurve, mnemonic string, masterSeed []byte, coin, account, chain, address uint32) (*bip32.Key, error) {
